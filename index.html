@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScriptGuide - Python Script Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg-color: #1a1a2e;
+            --dark-surface-color: #2c2c4a;
+            --dark-text-color: #e4e4f0;
+            --dark-secondary-text-color: #a0aec0;
+            --light-bg-color: #f0f2f5;
+            --light-surface-color: #ffffff;
+            --light-text-color: #1a1a2e;
+            --light-secondary-text-color: #4a5568;
+
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --primary-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            --primary-dark-gradient: linear-gradient(135deg, #4d3a84 0%, #2a2a53 100%);
+            
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.15);
+            --shadow-strong: 0 12px 48px rgba(0, 0, 0, 0.2);
+            
+            --border-radius: 16px;
+            --border-radius-lg: 24px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--dark-bg-color);
+            color: var(--dark-text-color);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        body.light-theme {
+            background: var(--light-bg-color);
+            color: var(--light-text-color);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(26, 26, 46, 0.85);
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-strong);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .light-theme .container {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 300px;
+            background: var(--primary-dark-gradient);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .logo {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: var(--dark-secondary-text-color);
+            font-size: 0.9rem;
+        }
+
+        .categories {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .category {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .category:hover {
+            transform: translateY(-2px);
+            background: var(--primary-gradient);
+        }
+
+        .category.active {
+            background: var(--primary-gradient);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .category-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--glass-bg);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--dark-text-color);
+            font-size: 0.9rem;
+        }
+
+        .light-theme .search-box input {
+            background: white;
+            color: var(--light-text-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-secondary-text-color);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .control-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--border-radius);
+            background: var(--glass-bg);
+            color: var(--dark-text-color);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-button:hover {
+            background: var(--primary-gradient);
+        }
+
+        /* Script Grid */
+        .scripts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        .script-card {
+            background: var(--dark-surface-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .light-theme .script-card {
+            background: white;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .script-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .script-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .script-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .script-difficulty {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .difficulty-beginner { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .difficulty-intermediate { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .difficulty-advanced { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+
+        .script-description {
+            color: var(--dark-secondary-text-color);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .script-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--dark-secondary-text-color);
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--dark-surface-color);
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .code-block {
+            background: #1e1e3f;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #f8f8f2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 300px;
+            }
+
+            .scripts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>ScriptGuide</h1>
+                <p>Python Script Library</p>
+            </div>
+            <div class="categories" id="categories">
+                <!-- Categories will be dynamically inserted here -->
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Search scripts..." id="searchInput">
+                </div>
+                <div class="controls">
+                    <button class="control-button" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark Mode</span>
+                    </button>
+                    <button class="control-button" id="languageToggle">
+                        <i class="fas fa-globe"></i>
+                        <span>English</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="scripts-grid" id="scriptsGrid">
+                <!-- Scripts will be dynamically inserted here -->
+            </div>
+        </main>
+    </div>
+
+    <div class="modal" id="scriptModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Script Details</h2>
+                <button class="control-button" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Script details will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script Categories
+        const categories = {
+            "System Automation": {
+                icon: "⚙️",
+                scripts: [
+                    {
+                        title: "System Resource Monitor",
+                        description: "Monitor CPU, memory, and disk usage in real-time",
+                        difficulty: "intermediate",
+                        tags: ["system", "monitoring", "performance"],
+                        code: `import psutil
+import time
+
+def monitor_resources():
+    while True:
+        cpu_percent = psutil.cpu_percent()
+        memory = psutil.virtual_memory()
+        disk = psutil.disk_usage('/')
+        
+        print(f"CPU Usage: {cpu_percent}%")
+        print(f"Memory Usage: {memory.percent}%")
+        print(f"Disk Usage: {disk.percent}%")
+        
+        time.sleep(1)`
+                    },
+                    {
+                        title: "Automated Backup Tool",
+                        description: "Create automated backups of specified directories",
+                        difficulty: "intermediate",
+                        tags: ["backup", "files", "automation"],
+                        code: `import shutil
+import datetime
+import os
+
+def create_backup(source_dir, backup_dir):
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_name = f"backup_{timestamp}"
+    backup_path = os.path.join(backup_dir, backup_name)
+    
+    shutil.make_archive(backup_path, 'zip', source_dir)
+    print(f"Backup created: {backup_path}.zip")`
+                    },
+                    {
+                        title: "Log File Analyzer",
+                        description: "Analyze log files for patterns and errors",
+                        difficulty: "intermediate",
+                        tags: ["logs", "analysis", "patterns"],
+                        code: `import re
+from collections import Counter
+
+def analyze_log(log_file):
+    patterns = {
+        'error': r'ERROR|CRITICAL|FATAL',
+        'warning': r'WARNING|WARN',
+        'ip_address': r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
+    }
+    
+    results = {k: Counter() for k in patterns}
+    
+    with open(log_file, 'r') as f:
+        for line in f:
+            for pattern_name, pattern in patterns.items():
+                matches = re.findall(pattern, line)
+                results[pattern_name].update(matches)
+    
+    return results`
+                    },
+                    {
+                        title: "File Organizer",
+                        description: "Automatically organize files by type and date",
+                        difficulty: "beginner",
+                        tags: ["files", "organization", "automation"],
+                        code: `import os
+import shutil
+from datetime import datetime
+
+def organize_files(directory):
+    for filename in os.listdir(directory):
+        if os.path.isfile(os.path.join(directory, filename)):
+            # Get file extension
+            ext = filename.split('.')[-1].lower()
+            
+            # Create category folder if it doesn't exist
+            category_dir = os.path.join(directory, ext)
+            os.makedirs(category_dir, exist_ok=True)
+            
+            # Move file to appropriate folder
+            shutil.move(
+                os.path.join(directory, filename),
+                os.path.join(category_dir, filename)
+            )`
+                    },
+                    {
+                        title: "Task Scheduler",
+                        description: "Schedule and manage automated tasks",
+                        difficulty: "advanced",
+                        tags: ["scheduling", "automation", "tasks"],
+                        code: `from datetime import datetime
+import schedule
+import time
+
+class TaskScheduler:
+    def __init__(self):
+        self.jobs = {}
+    
+    def add_task(self, name, func, interval):
+        if interval.startswith('every_day'):
+            schedule.every().day.at(interval.split('at_')[1]).do(func)
+        elif interval.startswith('every_hour'):
+            schedule.every().hour.do(func)
+        
+        self.jobs[name] = func
+    
+    def run(self):
+        while True:
+            schedule.run_pending()
+            time.sleep(1)`
+                    }
+                ]
+            },
+            "Network Tools": {
+                icon: "🌐",
+                scripts: [
+                    {
+                        title: "Network Port Scanner",
+                        description: "Scan network ports for open services",
+                        difficulty: "intermediate",
+                        tags: ["networking", "security", "ports"],
+                        code: `import socket
+import threading
+from queue import Queue
+
+def port_scan(target, port, open_ports):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(1)
+    result = sock.connect_ex((target, port))
+    if result == 0:
+        open_ports.append(port)
+    sock.close()`
+                    },
+                    {
+                        title: "HTTP Request Tester",
+                        description: "Test HTTP endpoints with various methods",
+                        difficulty: "beginner",
+                        tags: ["http", "api", "testing"],
+                        code: `import requests
+import json
+
+def test_endpoint(url, method='GET', data=None, headers=None):
+    try:
+        response = requests.request(
+            method,
+            url,
+            json=data,
+            headers=headers
+        )
+        return {
+            'status_code': response.status_code,
+            'headers': dict(response.headers),
+            'body': response.json() if response.headers.get('content-type') == 'application/json' else response.text
+        }
+    except Exception as e:
+        return {'error': str(e)}`
+                    },
+                    {
+                        title: "Network Traffic Monitor",
+                        description: "Monitor network traffic and bandwidth usage",
+                        difficulty: "advanced",
+                        tags: ["networking", "monitoring", "traffic"],
+                        code: `import psutil
+import time
+
+def monitor_network():
+    while True:
+        stats = psutil.net_io_counters()
+        bytes_sent = stats.bytes_sent
+        bytes_recv = stats.bytes_recv
+        
+        time.sleep(1)
+        
+        new_stats = psutil.net_io_counters()
+        bytes_sent_sec = new_stats.bytes_sent - bytes_sent
+        bytes_recv_sec = new_stats.bytes_recv - bytes_recv
+        
+        console.clear()
+        print(f"Upload: {bytes_sent_sec/1024:.2f} KB/s")
+        print(f"Download: {bytes_recv_sec/1024:.2f} KB/s")`
+                    },
+                    {
+                        title: "DNS Query Tool",
+                        description: "Perform DNS queries and analyze results",
+                        difficulty: "intermediate",
+                        tags: ["dns", "networking", "analysis"],
+                        code: `import dns.resolver
+import dns.reversename
+
+def dns_lookup(domain, record_type='A'):
+    try:
+        answers = dns.resolver.resolve(domain, record_type)
+        return [str(rdata) for rdata in answers]
+    except Exception as e:
+        return [f"Error: {str(e)}"]`
+                    },
+                    {
+                        title: "SSL Certificate Checker",
+                        description: "Check SSL certificate status and expiration",
+                        difficulty: "intermediate",
+                        tags: ["ssl", "security", "certificates"],
+                        code: `import ssl
+import socket
+import datetime
+
+def check_ssl_cert(hostname, port=443):
+    context = ssl.create_default_context()
+    with socket.create_connection((hostname, port)) as sock:
+        with context.wrap_socket(sock, server_hostname=hostname) as ssock:
+            cert = ssock.getpeercert()
+            
+    expire_date = datetime.datetime.strptime(
+        cert['notAfter'],
+        '%b %d %H:%M:%S %Y GMT'
+    )
+    
+    days_left = (expire_date - datetime.datetime.now()).days
+    
+    return {
+        'subject': dict(x[0] for x in cert['subject']),
+        'issuer': dict(x[0] for x in cert['issuer']),
+        'expire_date': expire_date,
+        'days_left': days_left
+    }`
+                    }
+                ]
+            },
+            "Data Management": {
+                icon: "📁",
+                scripts: [
+                    {
+                        title: "CSV Data Processor",
+                        description: "Process and analyze CSV files with advanced features",
+                        difficulty: "intermediate",
+                        tags: ["csv", "data", "analysis"],
+                        code: `import pandas as pd
+import numpy as np
+
+def process_csv(file_path):
+    # Read CSV file
+    df = pd.read_csv(file_path)
+    
+    # Basic statistics
+    stats = {
+        'row_count': len(df),
+        'column_count': len(df.columns),
+        'missing_values': df.isnull().sum().to_dict(),
+        'numeric_columns': df.select_dtypes(include=[np.number]).columns.tolist(),
+        'categorical_columns': df.select_dtypes(include=['object']).columns.tolist()
+    }
+    
+    # Summary statistics for numeric columns
+    numeric_stats = df.describe()
+    
+    return stats, numeric_stats`
+                    },
+                    {
+                        title: "JSON Data Converter",
+                        description: "Convert between different JSON formats and validate JSON data",
+                        difficulty: "beginner",
+                        tags: ["json", "conversion", "validation"],
+                        code: `import json
+from typing import Union, Dict, List
+
+class JSONConverter:
+    @staticmethod
+    def validate_json(json_str: str) -> bool:
+        try:
+            json.loads(json_str)
+            return True
+        except json.JSONDecodeError:
+            return False
+    
+    @staticmethod
+    def prettify(json_str: str) -> str:
+        return json.dumps(json.loads(json_str), indent=2)
+    
+    @staticmethod
+    def minimize(json_str: str) -> str:
+        return json.dumps(json.loads(json_str), separators=(',', ':'))
+    
+    @staticmethod
+    def convert_to_yaml(json_str: str) -> str:
+        import yaml
+        return yaml.dump(json.loads(json_str))`
+                    },
+                    {
+                        title: "Database Manager",
+                        description: "Manage SQL databases with Python",
+                        difficulty: "advanced",
+                        tags: ["database", "sql", "management"],
+                        code: `import sqlite3
+from typing import List, Dict, Any
+
+class DatabaseManager:
+    def __init__(self, db_path: str):
+        self.db_path = db_path
+        self.conn = None
+        self.cursor = None
+    
+    def connect(self):
+        self.conn = sqlite3.connect(self.db_path)
+        self.cursor = self.conn.cursor()
+    
+    def execute_query(self, query: str, params: tuple = None) -> List[Dict[str, Any]]:
+        if not self.conn:
+            self.connect()
+        
+        cursor = self.conn.cursor()
+        if params:
+            cursor.execute(query, params)
+        else:
+            cursor.execute(query)
+            
+        if query.lower().startswith('select'):
+            columns = [description[0] for description in cursor.description]
+            results = [dict(zip(columns, row)) for row in cursor.fetchall()]
+            return results
+        else:
+            self.conn.commit()
+            return []
+    
+    def close(self):
+        if self.conn:
+            self.conn.close()
+            self.conn = None`
+                    },
+                    {
+                        title: "Excel File Manager",
+                        description: "Manage and process Excel files with advanced features",
+                        difficulty: "intermediate",
+                        tags: ["excel", "spreadsheet", "automation"],
+                        code: `from openpyxl import Workbook, load_workbook
+from openpyxl.styles import Font, PatternFill
+from datetime import datetime
+
+class ExcelManager:
+    def __init__(self, file_path: str):
+        self.file_path = file_path
+        
+    def create_workbook(self):
+        wb = Workbook()
+        wb.save(self.file_path)
+        
+    def format_header(self, sheet_name: str, headers: list):
+        wb = load_workbook(self.file_path)
+        ws = wb[sheet_name]
+        
+        header_font = Font(bold=True, size=12)
+        header_fill = PatternFill(start_color="CCE5FF", end_color="CCE5FF", fill_type="solid")
+        
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col)
+            cell.value = header
+            cell.font = header_font
+            cell.fill = header_fill
+            
+        wb.save(self.file_path)`
+                    },
+                    {
+                        title: "XML Parser",
+                        description: "Parse and process XML files with validation",
+                        difficulty: "intermediate",
+                        tags: ["xml", "parsing", "validation"],
+                        code: `import xml.etree.ElementTree as ET
+from xml.dom import minidom
+from typing import Dict, List
+
+class XMLProcessor:
+    @staticmethod
+    def parse_xml(xml_file: str) -> Dict:
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+        
+        def element_to_dict(element):
+            result = {}
+            for child in element:
+                if len(child) > 0:
+                    result[child.tag] = element_to_dict(child)
+                else:
+                    result[child.tag] = child.text
+            return result
+            
+        return element_to_dict(root)
+    
+    @staticmethod
+    def create_xml(data: Dict, root_name: str) -> str:
+        def dict_to_xml(parent, data):
+            for key, value in data.items():
+                child = ET.SubElement(parent, key)
+                if isinstance(value, dict):
+                    dict_to_xml(child, value)
+                else:
+                    child.text = str(value)
+        
+        root = ET.Element(root_name)
+        dict_to_xml(root, data)
+        
+        xml_str = ET.tostring(root)
+        pretty_xml = minidom.parseString(xml_str).toprettyxml()
+        
+        return pretty_xml`
+                    }
+                ]
+            },
+            "Cryptographic Tools": {
+                icon: "🔒",
+                scripts: [
+                    {
+                        title: "Password Generator",
+                        description: "Generate secure passwords with customizable parameters",
+                        difficulty: "beginner",
+                        tags: ["security", "passwords", "cryptography"],
+                        code: `import random
+import string
+
+def generate_password(length=12, use_special=True, use_numbers=True):
+    chars = string.ascii_letters
+    if use_numbers:
+        chars += string.digits
+    if use_special:
+        chars += string.punctuation
+        
+    password = ''.join(random.choice(chars) for _ in range(length))
+    return password
+
+def generate_multiple_passwords(count=5, **kwargs):
+    return [generate_password(**kwargs) for _ in range(count)]`
+                    },
+                    {
+                        title: "File Encryptor",
+                        description: "Encrypt and decrypt files using AES encryption",
+                        difficulty: "intermediate",
+                        tags: ["security", "encryption", "files"],
+                        code: `from cryptography.fernet import Fernet
+import base64
+import os
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
+class FileEncryptor:
+    def __init__(self, password):
+        salt = os.urandom(16)
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=salt,
+            iterations=100000,
+        )
+        key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
+        self.fernet = Fernet(key)
+    
+    def encrypt_file(self, input_file, output_file=None):
+        if not output_file:
+            output_file = input_file + '.encrypted'
+        
+        with open(input_file, 'rb') as f:
+            data = f.read()
+        
+        encrypted_data = self.fernet.encrypt(data)
+        
+        with open(output_file, 'wb') as f:
+            f.write(encrypted_data)`
+                    },
+                    {
+                        title: "Hash Calculator",
+                        description: "Calculate various hash types for files and strings",
+                        difficulty: "intermediate",
+                        tags: ["security", "hashing", "verification"],
+                        code: `import hashlib
+import os
+
+class HashCalculator:
+    @staticmethod
+    def calculate_file_hash(filepath, hash_type='sha256'):
+        hash_funcs = {
+            'md5': hashlib.md5(),
+            'sha1': hashlib.sha1(),
+            'sha256': hashlib.sha256(),
+            'sha512': hashlib.sha512()
+        }
+        
+        if hash_type not in hash_funcs:
+            raise ValueError(f"Unsupported hash type: {hash_type}")
+            
+        h = hash_funcs[hash_type]
+        
+        with open(filepath, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                h.update(chunk)
+                
+        return h.hexdigest()`
+                    },
+                    {
+                        title: "RSA Key Generator",
+                        description: "Generate RSA key pairs for asymmetric encryption",
+                        difficulty: "advanced",
+                        tags: ["security", "encryption", "rsa"],
+                        code: `from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives import serialization
+
+def generate_rsa_keys(key_size=2048):
+    private_key = rsa.generate_private_key(
+        public_exponent=65537,
+        key_size=key_size
+    )
+    public_key = private_key.public_key()
+    
+    return {
+        'private_key': private_key,
+        'public_key': public_key
+    }
+
+def save_keys(keys, private_path, public_path):
+    # Save private key
+    with open(private_path, 'wb') as f:
+        f.write(keys['private_key'].private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption()
+        ))
+    
+    # Save public key
+    with open(public_path, 'wb') as f:
+        f.write(keys['public_key'].public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        ))`
+                    },
+                    {
+                        title: "Password Strength Checker",
+                        description: "Evaluate password strength using multiple criteria",
+                        difficulty: "intermediate",
+                        tags: ["security", "passwords", "validation"],
+                        code: `import re
+from typing import Dict
+
+def check_password_strength(password: str) -> Dict[str, bool]:
+    criteria = {
+        'length': len(password) >= 8,
+        'uppercase': bool(re.search(r'[A-Z]', password)),
+        'lowercase': bool(re.search(r'[a-z]', password)),
+        'numbers': bool(re.search(r'\d', password)),
+        'special': bool(re.search(r'[!@#$%^&*(),.?":{}|<>]', password))
+    }
+    
+    score = sum(criteria.values()) / len(criteria) * 100
+    
+    return {
+        'criteria': criteria,
+        'score': score,
+        'strength': 'Strong' if score >= 80 else 'Medium' if score >= 60 else 'Weak'
+    }`
+                    }
+                ]
+            },
+            "Web Scraping": {
+                icon: "🕷️",
+                scripts: [
+                    {
+                        title: "HTML Content Extractor",
+                        description: "Extract specific content from web pages using BeautifulSoup",
+                        difficulty: "intermediate",
+                        tags: ["web", "scraping", "beautifulsoup"],
+                        code: `import requests
+from bs4 import BeautifulSoup
+from typing import List, Dict
+
+def extract_content(url: str, selectors: Dict[str, str]) -> Dict[str, List[str]]:
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        results = {}
+        for key, selector in selectors.items():
+            elements = soup.select(selector)
+            results[key] = [elem.get_text(strip=True) for elem in elements]
+            
+        return results
+    except Exception as e:
+        return {'error': str(e)}`
+                    },
+                    {
+                        title: "Dynamic Page Scraper",
+                        description: "Scrape JavaScript-rendered pages using Selenium",
+                        difficulty: "advanced",
+                        tags: ["web", "scraping", "selenium"],
+                        code: `from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+class DynamicScraper:
+    def __init__(self):
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')
+        self.driver = webdriver.Chrome(options=chrome_options)
+    
+    def scrape_page(self, url: str, wait_for_element: str, timeout: int = 10):
+        try:
+            self.driver.get(url)
+            element = WebDriverWait(self.driver, timeout).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, wait_for_element))
+            )
+            return self.driver.page_source
+        finally:
+            self.driver.quit()`
+                    },
+                    {
+                        title: "API Data Collector",
+                        description: "Collect and process data from REST APIs",
+                        difficulty: "intermediate",
+                        tags: ["api", "data", "requests"],
+                        code: `import requests
+import json
+from typing import Dict, Any
+from time import sleep
+
+class APICollector:
+    def __init__(self, base_url: str, headers: Dict[str, str] = None):
+        self.base_url = base_url
+        self.headers = headers or {}
+        self.session = requests.Session()
+        
+    def fetch_data(self, endpoint: str, params: Dict[str, Any] = None) -> Dict:
+        url = f"{self.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
+        
+        try:
+            response = self.session.get(url, headers=self.headers, params=params)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            return {'error': str(e)}`
+                    },
+                    {
+                        title: "Image Downloader",
+                        description: "Download images from web pages with filtering options",
+                        difficulty: "intermediate",
+                        tags: ["web", "images", "downloading"],
+                        code: `import requests
+import os
+from urllib.parse import urljoin, urlparse
+from bs4 import BeautifulSoup
+
+class ImageDownloader:
+    def __init__(self, output_dir: str):
+        self.output_dir = output_dir
+        os.makedirs(output_dir, exist_ok=True)
+        
+    def download_images(self, url: str, min_size: int = 0):
+        try:
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            for img in soup.find_all('img'):
+                img_url = urljoin(url, img.get('src', ''))
+                if not img_url:
+                    continue
+                    
+                try:
+                    img_response = requests.get(img_url, stream=True)
+                    if int(img_response.headers.get('Content-Length', 0)) < min_size:
+                        continue
+                        
+                    filename = os.path.join(
+                        self.output_dir,
+                        os.path.basename(urlparse(img_url).path)
+                    )
+                    
+                    with open(filename, 'wb') as f:
+                        for chunk in img_response.iter_content(chunk_size=8192):
+                            f.write(chunk)
+                            
+                except Exception as e:
+                    print(f"Error downloading {img_url}: {e}")
+                    
+        except Exception as e:
+            print(f"Error processing page {url}: {e}")`
+                    },
+                    {
+                        title: "Web Archive Scraper",
+                        description: "Scrape historical versions of web pages from web archives",
+                        difficulty: "advanced",
+                        tags: ["web", "archive", "history"],
+                        code: `import requests
+import json
+from datetime import datetime
+from typing import List, Dict
+
+class WebArchiveScraper:
+    def __init__(self):
+        self.base_url = "http://web.archive.org/web"
+        
+    def get_snapshots(self, url: str, year: int = None) -> List[Dict]:
+        cdx_url = f"http://web.archive.org/cdx/search/cdx"
+        params = {
+            'url': url,
+            'output': 'json',
+            'fl': 'timestamp,original,statuscode,length'
+        }
+        
+        if year:
+            params['from'] = f"{year}0101"
+            params['to'] = f"{year}1231"
+            
+        try:
+            response = requests.get(cdx_url, params=params)
+            response.raise_for_status()
+            
+            data = response.json()
+            if len(data) < 2:  # No snapshots found
+                return []
+                
+            headers = data[0]
+            snapshots = []
+            
+            for row in data[1:]:
+                snapshot = dict(zip(headers, row))
+                snapshot['datetime'] = datetime.strptime(
+                    snapshot['timestamp'],
+                    '%Y%m%d%H%M%S'
+                )
+                snapshots.append(snapshot)
+                
+            return snapshots
+            
+        except Exception as e:
+            print(f"Error fetching snapshots: {e}")
+            return []
+            
+    def get_snapshot_content(self, url: str, timestamp: str) -> str:
+        archive_url = f"{self.base_url}/{timestamp}/{url}"
+        
+        try:
+            response = requests.get(archive_url)
+            response.raise_for_status()
+            return response.text
+        except Exception as e:
+            print(f"Error fetching snapshot content: {e}")
+            return None`
+                    }
+                ]
+            },
+            "Text Analysis": {
+                icon: "📝",
+                scripts: [
+                    {
+                        title: "Sentiment Analyzer",
+                        description: "Analyze text sentiment using natural language processing",
+                        difficulty: "intermediate",
+                        tags: ["nlp", "analysis", "sentiment"],
+                        code: `from textblob import TextBlob
+import nltk
+from typing import Dict, List
+
+class SentimentAnalyzer:
+    def __init__(self):
+        nltk.download('punkt')
+        nltk.download('averaged_perceptron_tagger')
+        
+    def analyze_sentiment(self, text: str) -> Dict:
+        blob = TextBlob(text)
+        
+        return {
+            'polarity': blob.sentiment.polarity,
+            'subjectivity': blob.sentiment.subjectivity,
+            'sentiment': 'positive' if blob.sentiment.polarity > 0 else 'negative' if blob.sentiment.polarity < 0 else 'neutral',
+            'sentences': len(blob.sentences),
+            'words': len(blob.words)
+        }`
+                    },
+                    {
+                        title: "Keyword Extractor",
+                        description: "Extract important keywords from text using RAKE algorithm",
+                        difficulty: "intermediate",
+                        tags: ["nlp", "keywords", "extraction"],
+                        code: `import nltk
+from rake_nltk import Rake
+from typing import List, Tuple
+
+class KeywordExtractor:
+    def __init__(self):
+        nltk.download('punkt')
+        nltk.download('stopwords')
+        self.rake = Rake()
+        
+    def extract_keywords(self, text: str, top_n: int = 10) -> List[Tuple[str, float]]:
+        self.rake.extract_keywords_from_text(text)
+        return self.rake.get_ranked_phrases_with_scores()[:top_n]`
+                    },
+                    {
+                        title: "Text Summarizer",
+                        description: "Generate text summaries using extractive summarization",
+                        difficulty: "advanced",
+                        tags: ["nlp", "summarization", "analysis"],
+                        code: `from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.corpus import stopwords
+from string import punctuation
+from heapq import nlargest
+from collections import defaultdict
+
+class TextSummarizer:
+    def __init__(self):
+        nltk.download('punkt')
+        nltk.download('stopwords')
+        self.stopwords = set(stopwords.words('english') + list(punctuation))
+        
+    def summarize(self, text: str, num_sentences: int = 3) -> str:
+        sentences = sent_tokenize(text)
+        word_freq = defaultdict(int)
+        
+        # Calculate word frequencies
+        for word in word_tokenize(text.lower()):
+            if word not in self.stopwords:
+                word_freq[word] += 1
+                
+        # Calculate sentence scores
+        sentence_scores = defaultdict(int)
+        for sentence in sentences:
+            for word in word_tokenize(sentence.lower()):
+                if word in word_freq:
+                    sentence_scores[sentence] += word_freq[word]
+                    
+        # Get top sentences
+        summary_sentences = nlargest(num_sentences, sentence_scores, key=sentence_scores.get)
+        summary = ' '.join(summary_sentences)
+        
+        return summary`
+                    },
+                    {
+                        title: "Language Detector",
+                        description: "Detect the language of text using various algorithms",
+                        difficulty: "intermediate",
+                        tags: ["nlp", "language", "detection"],
+                        code: `from langdetect import detect, DetectorFactory
+import nltk
+from typing import Dict, List
+
+class LanguageDetector:
+    def __init__(self):
+        DetectorFactory.seed = 0  # For consistent results
+        nltk.download('averaged_perceptron_tagger')
+        
+    def detect_language(self, text: str) -> Dict:
+        try:
+            lang_code = detect(text)
+            confidence = self._calculate_confidence(text)
+            
+            return {
+                'language_code': lang_code,
+                'confidence': confidence,
+                'word_count': len(text.split()),
+                'character_count': len(text)
+            }
+        except Exception as e:
+            return {'error': str(e)}`
+                    },
+                    {
+                        title: "Text Similarity Checker",
+                        description: "Compare text similarity using various metrics",
+                        difficulty: "advanced",
+                        tags: ["nlp", "similarity", "comparison"],
+                        code: `from difflib import SequenceMatcher
+from nltk.corpus import wordnet
+from typing import List, Dict
+
+class TextSimilarityChecker:
+    @staticmethod
+    def sequence_similarity(text1: str, text2: str) -> float:
+        return SequenceMatcher(None, text1, text2).ratio()
+    
+    @staticmethod
+    def word_similarity(word1: str, word2: str) -> float:
+        try:
+            syns1 = wordnet.synsets(word1)
+            syns2 = wordnet.synsets(word2)
+            
+            if not syns1 or not syns2:
+                return 0.0
+                
+            return max(
+                s1.path_similarity(s2) or 0
+                for s1 in syns1
+                for s2 in syns2
+            )
+        except Exception:
+            return 0.0
+    
+    def text_similarity(self, text1: str, text2: str) -> Dict:
+        words1 = set(text1.lower().split())
+        words2 = set(text2.lower().split())
+        
+        sequence_sim = self.sequence_similarity(text1, text2)
+        word_sim = sum(
+            max(self.word_similarity(w1, w2) for w2 in words2)
+            for w1 in words1
+        ) / len(words1) if words1 else 0
+        
+        return {
+            'sequence_similarity': sequence_sim,
+            'word_similarity': word_sim,
+            'combined_score': (sequence_sim + word_sim) / 2
+        }`
+                    }
+                ]
+            },
+        };
+
+        // UI State
+        let currentCategory = null;
+        let isDarkTheme = true;
+        let currentLanguage = 'en';
+
+        // DOM Elements
+        const categoriesContainer = document.getElementById('categories');
+        const scriptsGrid = document.getElementById('scriptsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const themeToggle = document.getElementById('themeToggle');
+        const languageToggle = document.getElementById('languageToggle');
+        const modal = document.getElementById('scriptModal');
+        const closeModal = document.getElementById('closeModal');
+
+        // Initialize UI
+        function initializeUI() {
+            renderCategories();
+            setupEventListeners();
+        }
+
+        // Render Categories
+        function renderCategories() {
+            categoriesContainer.innerHTML = '';
+            Object.entries(categories).forEach(([name, category]) => {
+                const categoryElement = document.createElement('div');
+                categoryElement.className = 'category';
+                categoryElement.innerHTML = `
+                    <div class="category-icon">${category.icon}</div>
+                    <div class="category-name">${name}</div>
+                `;
+                categoryElement.onclick = () => selectCategory(name);
+                categoriesContainer.appendChild(categoryElement);
+            });
+        }
+
+        // Select Category
+        function selectCategory(categoryName) {
+            currentCategory = categoryName;
+            document.querySelectorAll('.category').forEach(cat => {
+                cat.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            renderScripts(categories[categoryName].scripts);
+        }
+
+        // Render Scripts
+        function renderScripts(scripts) {
+            scriptsGrid.innerHTML = '';
+            scripts.forEach(script => {
+                const scriptElement = document.createElement('div');
+                scriptElement.className = 'script-card';
+                scriptElement.innerHTML = `
+                    <div class="script-header">
+                        <h3 class="script-title">${script.title}</h3>
+                        <span class="script-difficulty difficulty-${script.difficulty}">${script.difficulty}</span>
+                    </div>
+                    <p class="script-description">${script.description}</p>
+                    <div class="script-tags">
+                        ${script.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                `;
+                scriptElement.onclick = () => showScriptDetails(script);
+                scriptsGrid.appendChild(scriptElement);
+            });
+        }
+
+        // Show Script Details
+        function showScriptDetails(script) {
+            const modalBody = modal.querySelector('.modal-body');
+            modalBody.innerHTML = `
+                <h3>${script.title}</h3>
+                <p>${script.description}</p>
+                <div class="code-block">
+                    <pre><code>${script.code}</code></pre>
+                </div>
+            `;
+            modal.classList.add('active');
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            themeToggle.onclick = toggleTheme;
+            languageToggle.onclick = toggleLanguage;
+            closeModal.onclick = () => modal.classList.remove('active');
+            searchInput.oninput = handleSearch;
+        }
+
+        // Toggle Theme
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('light-theme');
+            themeToggle.querySelector('span').textContent = isDarkTheme ? 'Dark Mode' : 'Light Mode';
+            themeToggle.querySelector('i').className = isDarkTheme ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        // Toggle Language
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'pl' : 'en';
+            languageToggle.querySelector('span').textContent = currentLanguage === 'en' ? 'English' : 'Polski';
+        }
+
+        // Handle Search
+        function handleSearch(event) {
+            const searchTerm = event.target.value.toLowerCase();
+            if (currentCategory) {
+                const filteredScripts = categories[currentCategory].scripts.filter(script =>
+                    script.title.toLowerCase().includes(searchTerm) ||
+                    script.description.toLowerCase().includes(searchTerm) ||
+                    script.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                );
+                renderScripts(filteredScripts);
+            }
+        }
+
+        // Initialize the application
+        initializeUI();
+    </script>
+</body>
+</html>
